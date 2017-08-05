@@ -11,12 +11,13 @@ let http = require('http');
 http.createServer(function(req,res){
    let method = req.method;//取得请求的方法名
    let url = req.url;//取得请求的URL路径
+   res.setHeader('Content-Type','text/html;charset=utf-8')
   //如果说请求的方法是GET并且访问的url地址是/
    if(method == 'GET' && url == '/'){
-     res.end('home');//home就是响应体
+     res.end('首页');//home就是响应体
    }else if(method == 'GET' && url == '/user'){
-     res.end('user');
+     res.end('用户管理');
    }else{
-     res.end(`CANNOT ${method} ${url}`);
+     res.end(`办不到 ${method} ${url}`);
    }
 }).listen(3000);
