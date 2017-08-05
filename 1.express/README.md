@@ -13,4 +13,7 @@ npm init -y
 本地安装express依赖
 ```
 npm install express --save
+
 ```
+`-S` `--save`的话是在`package.json`中dependencies添加一行
+`-D` `--save-dev`的话是在`package`.json中`devDependencies`中添加一行
