@@ -6,4 +6,7 @@ let router = express.Router();//mini-app
 router.get('/eight',function(req,res){
   res.send('八宝粥');//send会自动处理编码
 });
+router.get('/egg',function(req,res){
+  res.send('皮蛋瘦肉粥');
+});
 module.exports = router;
