@@ -14,9 +14,10 @@ http.createServer(function(req,res){
       let cookie = req.headers.cookie;
       if(cookie){// visit=1
         //把cookie字符串转成对象
-        let cookieObj = querystring.parse(cookie);
+        //Cookie:name=zfpx; visit=NaN
+        let cookieObj = querystring.parse(cookie,'; ');
         let visit = cookieObj.visit;
-        visit = parseInt(visit)+1;
+        visit = isNaN(visit)?1:parseInt(visit)+1;
         res.setHeader('Set-Cookie',`visit=${visit}`);
         res.end(`欢迎你的第${visit}次访问`);
       }else{
