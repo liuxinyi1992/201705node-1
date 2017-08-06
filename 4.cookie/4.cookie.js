@@ -10,7 +10,9 @@ app.use(cookieParser());
  */
 app.get('/write',function(req,res){
   res.cookie('name','zfpx',{
-    path:'/read'
+    //path:'/read'//规定了发cookie的时机和范围
+    //expires:new Date(Date.now()+10*1000) //设置过期时间
+    maxAge:1000//设置此cookie的最长存活时间
   });
   res.send('ok');
 });
