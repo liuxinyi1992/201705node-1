@@ -24,7 +24,10 @@ let app = express();
 app.use(session({
   resave:true,
   saveUninitialized:true,
-  secret:'zfpx'
+  secret:'zfpx',
+  cookie:{
+    maxAge:10*1000
+  }
 }));
 
 //  {"id":1}
