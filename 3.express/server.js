@@ -12,8 +12,17 @@ let path = require('path');
 let index = require('./routes/index');
 //user提供的是跟用户相关的路由
 let user = require('./routes/user');
+//请求体解析中间件 username=1&password=2
+// {username:1,password:2}
+//基本上所有的第三方中间件都会返回一个函数，执行这个函数才能得到真正的中间件函数
+let bodyParser = require('body-parser');
 //执行后又返回一个函数，请求监听函数
 let app = express();
+//  {"id":1}
+//请求体是什么类型，就用什么解析器来进行解析 不管输入的格式是urlencoded,还是json格式的，输出的格式都是对象
+//extended=true qs querystring
+app.use(bodyParser.urlencoded({extended:true}));
+//经过这个中间件得之后，我们可以通过req.body得到请求体
 //配置模板引擎 html
 app.set('view engine','html');
 //设置模板存放的根目录
