@@ -20,7 +20,7 @@ http.createServer(function(req,res){
         res.setHeader('Set-Cookie',`visit=${visit}`);
         res.end(`欢迎你的第${visit}次访问`);
       }else{
-        res.setHeader('Set-Cookie','visit=1');
+      res.setHeader('Set-Cookie','visit=1');
         res.end(`欢迎你的第1次访问`);
       }
   }else{
