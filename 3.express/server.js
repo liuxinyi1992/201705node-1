@@ -29,7 +29,9 @@ app.set('view engine','html');
 app.set('views',path.resolve('views'));
 //指定html类型的模板的渲染方法
 app.engine('html',require('ejs').__express);
-
+//express只有亲生的中间件，就是静态文件中间件
+//使用静态文件中间件，指定一个静态文件根目录
+app.use(express.static(path.resolve('../node_modules')));
 app.use('/',index);
 // /user指的是前缀，就是说以/user开头
 app.use('/user',user);
