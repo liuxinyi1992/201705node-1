@@ -6,6 +6,8 @@ router.get('/signup', function (req, res) {
   //1参数是模板的相对路径，相对于模板根目录的路径
   //模板的路径一定是一个相对路径
   let error = req.cookies.error;
+  //删除cookie
+  res.clearCookie('error');
   res.locals.error = error;
   res.render('user/signup', {title: '用户注册'});
 });
