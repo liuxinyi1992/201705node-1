@@ -12,7 +12,8 @@ app.get('/write',function(req,res){
   res.cookie('name','zfpx',{
     //path:'/read'//规定了发cookie的时机和范围
     //expires:new Date(Date.now()+10*1000) //设置过期时间
-    maxAge:1000//设置此cookie的最长存活时间
+    //maxAge:1000//设置此cookie的最长存活时间
+    httpOnly:true //只能用http访问
   });
   res.send('ok');
 });
