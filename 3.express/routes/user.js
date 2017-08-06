@@ -18,6 +18,13 @@ router.get('/signin',function(req,res){
   res.render('user/signin',{title:'用户登录'});
 });
 router.post('/signin',function(req,res){
-
+  let user = req.body;
+  //res.render redirect 都会包含一个 res.end操作
+  let oldUser = users.find(item=>item.username== user.username&&item.password == user.password);
+  if(oldUser){
+    res.redirect('/');
+  }else{
+    res.redirect('back');
+  }
 });
 module.exports = router;
