@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <style>
+        .user{
+            color:orangered;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 <div class="container" style="margin-top:15px">
@@ -14,7 +21,7 @@
                     <h4 class="text-center">欢迎来到珠峰聊天室</h4>
                 </div>
                 <div class="panel-body">
-                    <ul class="list-group" id="messages">
+                    <ul class="list-group" id="messages" onclick="clickMessages(event)">
 
                     </ul>
                 </div>
@@ -41,7 +48,7 @@
  //监听服务器发过来的消息
  socket.on('message',function(msgObj){
    let li = document.createElement('li');
-   li.innerHTML = `${msgObj.username}:${msgObj.content} <span class="pull-right">${msgObj.createAt}</span>`;
+   li.innerHTML = `<span class="user">${msgObj.username}</span>:${msgObj.content} <span class="pull-right">${msgObj.createAt}</span>`;
    li.className = 'list-group-item';
    document.querySelector('#messages').appendChild(li);
  });
@@ -54,7 +61,13 @@
    socket.send(val);
    txtMsg.value = '';
  }
-
+ //用来处理点击ul的事件
+ function clickMessages(event){
+   if(event.target.className == 'user'){//点的是用户名
+     let username = event.target.innerHTML;
+     txtMsg.value= `@${username} `;
+   }
+ }
 </script>
 </body>
 </html>
