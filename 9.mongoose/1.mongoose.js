@@ -107,7 +107,6 @@ let pageSize = 3;//每页3条
  * 在以上方法执行的时候向数据库的请求并没有真正发出，只要当调用exec方法的时候请求才真正发出
  */
 User.find()
-  .sort({age:-1}) //指定排序的字段和是否倒序
   .skip(pageSize*(pageNum-1))//跳过指定的条数
   .limit(pageSize)//限定最大返回的条数
   .exec(function(err,docs){//正式执行查询,当查询结果取回来的时候会调用回调函数，并传入查询到的结果
