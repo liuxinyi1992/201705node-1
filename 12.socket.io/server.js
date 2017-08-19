@@ -69,6 +69,7 @@ io.on('connection', function (socket) {
     }
     socket.join(roomName);//让此客户端加入某个房间
     currentRoom = roomName;//把这个新房间赋给当前房间
+    socket.emit('joined',roomName);
   });
 });
 //EventEmitter on('type')=emit('type')

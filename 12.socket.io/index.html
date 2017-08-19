@@ -20,8 +20,8 @@
                 <div class="panel-heading">
                     <h4 class="text-center">
                         欢迎来到珠峰聊天室
-                        <button onClick="join('red')" class="btn btn-default">红房间</button>
-                        <button onClick="join('green')" class="btn btn-default">绿房间</button>
+                        <button id="redBtn" onClick="join('red')" class="btn btn-default">红房间</button>
+                        <button id="greenBtn" onClick="join('green')" class="btn btn-default">绿房间</button>
                     </h4>
                 </div>
                 <div class="panel-body">
@@ -88,6 +88,12 @@
    //向后台发送一个消息，说要求此客户端进入某个房间,进入指定的房间后，在房间内说的话只有房间里的人才能听到，别的房间听不到
    socket.emit('join',roomName);
  }
+ socket.on('joined',function(roomName){
+    Array.from(document.querySelectorAll('button')).forEach(item=>{
+      item.className = 'btn btn-default';
+    })
+   document.querySelector('#'+roomName+'Btn').className = 'btn btn-danger';
+ });
 </script>
 </body>
 </html>
