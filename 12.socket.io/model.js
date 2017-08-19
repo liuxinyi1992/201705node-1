@@ -1,5 +1,6 @@
 let mongoose = require('mongoose');
-let conn = mongoose.connect('mongodb://127.0.0.1/201705chat');
+mongoose.Promise = Promise;
+let conn = mongoose.createConnection('mongodb://127.0.0.1/201705chat');
 //定义模型骨架
 let MessageSchema = new mongoose.Schema({
   username:String,//用户名
