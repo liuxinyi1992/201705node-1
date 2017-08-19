@@ -4,6 +4,7 @@
  **/
 let express = require('express');
 let path = require('path');
+let {Message} = require('./model');
 let app = express();
 //指定静态文件根目录
 app.use(express.static(path.resolve('../node_modules')));
@@ -34,7 +35,9 @@ io.on('connection', function (socket) {
         });
       }else{
         //广播,通知所有的客户端 。用户名是当前用户， 内容就是本次消息
-        io.emit('message', {username,content:msg,createAt:new Date().toLocaleString()});
+        Message.create({username,content:msg},function(err,doc){
+          io.emit('message',doc);
+        });
       }
     } else {//没有设置过的话就是第一次发言。
       username = msg;//把消息当成用户名
@@ -66,4 +69,6 @@ server.listen(8080);
  * 三、私聊
  *   1.当点击用户名的时候，在输入框架显示  @用户名 ，等待用户输入想说的话。
  *   2. 当回车的时候把消息发给服务器，服务器来判断是否是私聊。如果是的话，只把此消息发给对应用户。其它人则看不到。
+ * 四、数据持久化，当服务器收到消息的时候保存到数据里，以后每次客户端初次访问服务器的时候把最近的20条消息发送给客户端
+ *
  */
