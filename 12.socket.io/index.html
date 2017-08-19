@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+<div class="container" style="margin-top:15px">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="text-center">欢迎来到珠峰聊天室</h4>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-group"></ul>
+                </div>
+                <div class="panel-footer">
+                    <form>
+                        <input type="text" class="form-control">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+//当你在网页中引用了socket.io.js之后，会在window上挂载一个io的属性
+//执行此IO方法会返回一个socket实例,执行IO的时候已经开始连接服务器了
+//不写参数=等于写/=也等于写当前路径http://localhost:8080/
+ let socket = io('http://localhost:8080/');
+ //监听连接成功事件
+ socket.on('connect',function(){
+   console.log('连接成功');
+   socket.send('你好');//向服务器端发消息说: 你好
+ });
+ socket.on('message',function(msg){
+   console.log(msg);
+ });
+</script>
+</body>
+</html>
