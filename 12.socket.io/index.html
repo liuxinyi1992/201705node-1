@@ -53,7 +53,7 @@
    socket.emit('getAllMessages');
  });
  function formatMsg(msgObj){
-   return `<span class="user">${msgObj.username}</span>:${msgObj.content} <span class="pull-right">${new Date(msgObj.createAt).toLocaleString()}</span>`;
+   return `<span class="user">${msgObj.username}</span>:${msgObj.content}<button style="margin-left:10px" id="revoke_${msgObj._id}" class="btn btn-danger btn-xs revoke">撤回</button> <span class="pull-right">${new Date(msgObj.createAt).toLocaleString()}</span>`;
  }
  //监听服务器发过来的消息
  socket.on('message',function(msgObj){
@@ -81,6 +81,11 @@
    if(event.target.className == 'user'){//点的是用户名
      let username = event.target.innerHTML;
      txtMsg.value= `@${username} `;
+     //判断点击的是不是revoke也就是撤销按钮
+   }else if(/(^| )revoke($| )/.test(event.target.className)){
+       let id = event.target.id;//得到ID
+       id = id.slice(7);//revoke_id
+       socket.emit('revoke',id);//发射事件，要求服务器删除ID对应的元素
    }
  }
  //加入某个房间，参数是房间的名字
@@ -88,11 +93,20 @@
    //向后台发送一个消息，说要求此客户端进入某个房间,进入指定的房间后，在房间内说的话只有房间里的人才能听到，别的房间听不到
    socket.emit('join',roomName);
  }
+ //Array.from 把类数组转成数组
  socket.on('joined',function(roomName){
     Array.from(document.querySelectorAll('button')).forEach(item=>{
       item.className = 'btn btn-default';
     })
-   document.querySelector('#'+roomName+'Btn').className = 'btn btn-danger';
+   document.querySelector('#'+roomName+'Btn').className = 'btn btn-success';
+ });
+ socket.on('revoked',function(id){
+    let btn = document.querySelector('#revoke_'+id);
+    let deletedLi = btn.parentNode;
+    let newLi = document.createElement('li');
+    newLi.className = 'list-group-item';
+    newLi.innerHTML = '你撤回了一条消息';
+    deletedLi.parentNode.replaceChild(newLi,deletedLi);
  });
 </script>
 </body>

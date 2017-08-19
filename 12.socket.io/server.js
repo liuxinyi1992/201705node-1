@@ -71,6 +71,11 @@ io.on('connection', function (socket) {
     currentRoom = roomName;//把这个新房间赋给当前房间
     socket.emit('joined',roomName);
   });
+  socket.on('revoke',function(_id){
+    Message.remove({_id},function(){
+        io.emit('revoked',_id);
+    })
+  });
 });
 //EventEmitter on('type')=emit('type')
 /**
