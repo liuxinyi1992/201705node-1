@@ -47,6 +47,14 @@ io.on('connection', function (socket) {
       io.emit('message',{username:'系统',content:`欢迎${username}加入本聊天室`,createAt:new Date().toLocaleString()});
     }
   });
+  //监听客户端发过来的要求获得所有的最近20条消息的事件
+  socket.on('getAllMessages',function(){
+    Message.find({}).sort({createAt:-1}).limit(20).exec(function(err,messages){
+      // 最新的在最前面
+      messages.reverse();// 需要再倒序排列一下
+      socket.emit('allMessages',messages);
+    });
+  });
 });
 //EventEmitter on('type')=emit('type')
 /**

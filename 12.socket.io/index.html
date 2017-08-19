@@ -41,16 +41,27 @@
 //不写参数=等于写/=也等于写当前路径http://localhost:8080/
  let socket = io('http://localhost:8080/');
  let txtMsg = document.querySelector('#txtMsg');
+ let messagesUl = document.querySelector('#messages');
  //监听连接成功事件
  socket.on('connect',function(){
    console.log('连接成功');
+   //向服务器发送一个事件，名字叫getAllMessages.要求服务返回最近的20条消息
+   socket.emit('getAllMessages');
  });
+ function formatMsg(msgObj){
+   return `<span class="user">${msgObj.username}</span>:${msgObj.content} <span class="pull-right">${new Date(msgObj.createAt).toLocaleString()}</span>`;
+ }
  //监听服务器发过来的消息
  socket.on('message',function(msgObj){
    let li = document.createElement('li');
-   li.innerHTML = `<span class="user">${msgObj.username}</span>:${msgObj.content} <span class="pull-right">${msgObj.createAt}</span>`;
+   li.innerHTML = formatMsg(msgObj);
    li.className = 'list-group-item';
-   document.querySelector('#messages').appendChild(li);
+   messagesUl.appendChild(li);
+ });
+ socket.on('allMessages',function(messages){
+   messagesUl.innerHTML = messages.map((msgObj,index)=>(
+      `<li class="list-group-item">${formatMsg(msgObj)}</li>`
+    )).join('');
  });
 
  function  send(event) {
