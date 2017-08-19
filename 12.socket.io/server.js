@@ -31,9 +31,17 @@ io.on('connection', function (socket) {
         let toUser = result[1];//想私聊对方的用户名
         let content = result[2];//对方的内容
         //通过用户名找到对方的socket,然后发送消息
-        sockets[toUser].send({
-          username, content, createAt: new Date().toLocaleString()
-        });
+        let toSocket = sockets[toUser];
+        if(toSocket){
+          toSocket.send({
+            username, content, createAt: new Date().toLocaleString()
+          });
+        }else{
+          socket.send({
+            username:'系统', content:'你私聊的人不存在', createAt: new Date().toLocaleString()
+          });
+        }
+
       } else {
         //广播,通知所有的客户端 。用户名是当前用户， 内容就是本次消息
         Message.create({username, content: msg}, function (err, doc) {
