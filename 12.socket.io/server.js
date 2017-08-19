@@ -16,13 +16,19 @@ let server = require('http').createServer(app);
 let io = require('socket.io')(server);
 //监听客户端的连接成功事件
 io.on('connection',function(socket){
-   console.log('连接成功');
    socket.on('message',function(msg){
-     console.log(msg);
-     socket.send("服务器说:"+msg);
+    //socket.send(msg);//socket.emit('message',msg);
+     //广播,通知所有的客户端 。
+    io.emit('message',msg);
    });
 });
-//EventEmitter
+//EventEmitter on('type')=emit('type')
+/**
+ * Namespace.prototype.send = function(...args){
+    args.unshift('message');['message','hello']
+    socket.emit('message','hello');
+  };
+ */
 //现在websocket服务器和http服务器共用了8080端口
 server.listen(8080);
 
