@@ -21,22 +21,29 @@ let sockets = {};
 io.on('connection', function (socket) {
   //设置一个变量，表示此客户端的用户名,每个客户端都有自己的名字，所以应该是私有变量
   let username;
+  let currentRoom;//当前房间
   socket.on('message', function (msg) {
     //判断此客户端是第一次消息，还是不是第一次，如果是第一次，则设置用户名，如果不是第一次则使用用户名
     if (username) {//正常发言
       let reg = /@([^\s]+) (.+)/;//@1 hello
       let result = msg.match(reg);
-      if(result){//如果为true就是匹配上，那么就是私聊
+      if (result) {//如果为true就是匹配上，那么就是私聊
         let toUser = result[1];//想私聊对方的用户名
         let content = result[2];//对方的内容
         //通过用户名找到对方的socket,然后发送消息
         sockets[toUser].send({
-          username,content,createAt:new Date().toLocaleString()
+          username, content, createAt: new Date().toLocaleString()
         });
-      }else{
+      } else {
         //广播,通知所有的客户端 。用户名是当前用户， 内容就是本次消息
-        Message.create({username,content:msg},function(err,doc){
-          io.emit('message',doc);
+        Message.create({username, content: msg}, function (err, doc) {
+          if(currentRoom){//如果此客户端在某个房间内
+            //则向房间内进行广播，发消息
+            io.in(currentRoom).emit('message', doc);
+          }else{
+            //否则广播给所有的客户端
+            io.emit('message', doc);
+          }
         });
       }
     } else {//没有设置过的话就是第一次发言。
@@ -44,16 +51,24 @@ io.on('connection', function (socket) {
       //把此用户名它的socket对象关联在起来了，
       sockets[username] = socket;
       //当客户端第一次来的时候，要广播一条消息
-      io.emit('message',{username:'系统',content:`欢迎${username}加入本聊天室`,createAt:new Date().toLocaleString()});
+      io.emit('message', {username: '系统', content: `欢迎${username}加入本聊天室`, createAt: new Date().toLocaleString()});
     }
   });
   //监听客户端发过来的要求获得所有的最近20条消息的事件
-  socket.on('getAllMessages',function(){
-    Message.find({}).sort({createAt:-1}).limit(20).exec(function(err,messages){
+  socket.on('getAllMessages', function () {
+    Message.find({}).sort({createAt: -1}).limit(20).exec(function (err, messages) {
       // 最新的在最前面
       messages.reverse();// 需要再倒序排列一下
-      socket.emit('allMessages',messages);
+      socket.emit('allMessages', messages);
     });
+  });
+  //在服务器监听客户端要求进入某个房间的请求
+  socket.on('join',function(roomName){
+    if(currentRoom){//如果此客户端已经在某个房间内了
+      socket.leave(currentRoom);//则要先离开旧房间
+    }
+    socket.join(roomName);//让此客户端加入某个房间
+    currentRoom = roomName;//把这个新房间赋给当前房间
   });
 });
 //EventEmitter on('type')=emit('type')

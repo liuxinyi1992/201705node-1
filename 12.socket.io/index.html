@@ -18,7 +18,11 @@
         <div class="col-sm-8 col-sm-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="text-center">欢迎来到珠峰聊天室</h4>
+                    <h4 class="text-center">
+                        欢迎来到珠峰聊天室
+                        <button onClick="join('red')" class="btn btn-default">红房间</button>
+                        <button onClick="join('green')" class="btn btn-default">绿房间</button>
+                    </h4>
                 </div>
                 <div class="panel-body">
                     <ul class="list-group" id="messages" onclick="clickMessages(event)">
@@ -78,6 +82,11 @@
      let username = event.target.innerHTML;
      txtMsg.value= `@${username} `;
    }
+ }
+ //加入某个房间，参数是房间的名字
+ function join(roomName){
+   //向后台发送一个消息，说要求此客户端进入某个房间,进入指定的房间后，在房间内说的话只有房间里的人才能听到，别的房间听不到
+   socket.emit('join',roomName);
  }
 </script>
 </body>
