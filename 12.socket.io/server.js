@@ -15,16 +15,31 @@ let server = require('http').createServer(app);
 //引用socket.io服务器，执行它，传入http服务器的实例,返回io实例
 let io = require('socket.io')(server);
 //监听客户端的连接成功事件
+//这里记录了所有的用户名和它们的socket对象间的对应关系
+let sockets = {};
 io.on('connection', function (socket) {
   //设置一个变量，表示此客户端的用户名,每个客户端都有自己的名字，所以应该是私有变量
   let username;
   socket.on('message', function (msg) {
     //判断此客户端是第一次消息，还是不是第一次，如果是第一次，则设置用户名，如果不是第一次则使用用户名
     if (username) {//正常发言
-      //广播,通知所有的客户端 。用户名是当前用户， 内容就是本次消息
-      io.emit('message', {username,content:msg,createAt:new Date().toLocaleString()});
+      let reg = /@([^\s]+) (.+)/;//@1 hello
+      let result = msg.match(reg);
+      if(result){//如果为true就是匹配上，那么就是私聊
+        let toUser = result[1];//想私聊对方的用户名
+        let content = result[2];//对方的内容
+        //通过用户名找到对方的socket,然后发送消息
+        sockets[toUser].send({
+          username,content,createAt:new Date().toLocaleString()
+        });
+      }else{
+        //广播,通知所有的客户端 。用户名是当前用户， 内容就是本次消息
+        io.emit('message', {username,content:msg,createAt:new Date().toLocaleString()});
+      }
     } else {//没有设置过的话就是第一次发言。
       username = msg;//把消息当成用户名
+      //把此用户名它的socket对象关联在起来了，
+      sockets[username] = socket;
       //当客户端第一次来的时候，要广播一条消息
       io.emit('message',{username:'系统',content:`欢迎${username}加入本聊天室`,createAt:new Date().toLocaleString()});
     }
