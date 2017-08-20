@@ -23,3 +23,4 @@ function start(){
 }
 //开始执行任务
 start();
+module.exports = start;
