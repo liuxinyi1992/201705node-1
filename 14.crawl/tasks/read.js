@@ -4,6 +4,7 @@
 let request = require('request');
 let iconv = require('iconv-lite');
 let cheerio = require('cheerio');
+let debug = require('debug')('crawl:read');
 let read = (url,cb)=>{
   request({url,encoding:null},function(err,response,body){
     if(!err && response.statusCode == 200){
@@ -19,6 +20,7 @@ let read = (url,cb)=>{
           name:$this.text(),//A标签 的文本就是电影名称
           url:$this.attr('href') //A标签 href就是超链接
         }
+        debug(`读到电影: ${movie.name}`);
         movies.push(movie);
       });
       cb(err,movies);
@@ -26,6 +28,7 @@ let read = (url,cb)=>{
   });
 }
 
-read('http://top.baidu.com/buzz?b=26&c=1&fr=topcategory_c1',function(err,movies){
+/*read('http://top.baidu.com/buzz?b=26&c=1&fr=topcategory_c1',function(err,movies){
   console.log(movies);
-});
+});*/
+module.exports = read;
