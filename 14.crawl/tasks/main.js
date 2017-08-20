@@ -18,6 +18,7 @@ function start(){
     }
   ],function(err){
     debug('全部任务完成!');
+    process.exit(0);//正常结束当前进程
   });
 }
 //开始执行任务
