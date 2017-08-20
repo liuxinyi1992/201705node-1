@@ -8,7 +8,16 @@ request({url,encoding:null},function(err,response,body){
     //把GBK格式的buffer转成utf8的字符串
     body = iconv.decode(body,'gbk');
     let $ = cheerio.load(body);
-
+    let movies = [];
+    $('.hd .title a').each(function(){
+      let $this = $(this);
+      let movie = {
+        name:$this.text(),
+        url:$this.attr('href')
+      }
+      movies.push(movie);
+    });
+    console.log(movies);
   }
 });
 
