@@ -1,6 +1,3 @@
-/**
- *
- */
 let async = require('async');
 console.time('cost');
 async.parallel([
@@ -19,7 +16,7 @@ async.parallel([
   function(cb){
     setTimeout(function(){
       console.log(3);
-      cb(null,'3');
+      cb('我错了','3');
     },1000)
   }
 ],function(err,result){
